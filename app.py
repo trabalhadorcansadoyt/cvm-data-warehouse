@@ -68,21 +68,23 @@ if selected_dataset:
             for res in resources:
                 file_name = res['url'].split('/')[-1]
                 is_downloaded = extractor.is_downloaded(res)
-
-                # 🛡️ CORREÇÃO À PROVA DE FALHAS
+                
+                # 🛡️ BLINDAGEM TOTAL: A API da CVM retorna None para 'size'
                 raw_size = res.get('size')
-                if raw_size is None or not isinstance(raw_size, (int, float)):
+                try:
+                    # Tenta converter para float. Se for None ou inválido, vai para except
+                    size_mb = round(float(raw_size) / (1024 * 1024), 2) if raw_size else 0.0
+                except (ValueError, TypeError):
+                    # Se falhar por qualquer motivo, assume 0.0
                     size_mb = 0.0
-                else:
-                    size_mb = round(raw_size / (1024 * 1024), 2)
                 
                 data.append({
                     'Arquivo': file_name,
                     'Status': '✅ Baixado' if is_downloaded else '⏳ Pendente',
-                    'Tamanho (MB)': round(res.get('size', 0) / (1024*1024), 2),
+                    'Tamanho (MB)': size_mb,
                     'Formato': res.get('format', 'N/A'),
                     'URL': res['url'],
-                    'resource_obj': res  # Guardamos o objeto completo para uso posterior
+                    'resource_obj': res  # Objeto completo para download posterior
                 })
             
             df = pd.DataFrame(data)
