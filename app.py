@@ -69,9 +69,12 @@ if selected_dataset:
                 file_name = res['url'].split('/')[-1]
                 is_downloaded = extractor.is_downloaded(res)
 
-                # 🛡️ CORREÇÃO: Verifica se o tamanho existe antes de dividir
-                size_bytes = res.get('size')
-                size_mb = round(size_bytes / (1024 * 1024), 2) if size_bytes and size_bytes > 0 else 0.0
+                # 🛡️ CORREÇÃO À PROVA DE FALHAS
+                raw_size = res.get('size')
+                if raw_size is None or not isinstance(raw_size, (int, float)):
+                    size_mb = 0.0
+                else:
+                    size_mb = round(raw_size / (1024 * 1024), 2)
                 
                 data.append({
                     'Arquivo': file_name,
