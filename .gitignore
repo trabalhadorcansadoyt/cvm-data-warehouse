@@ -1,0 +1,15 @@
+# Ambiente virtual Python
+venv/
+.env
+
+# Arquivos temporários do Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Dados baixados (não subimos dados brutos para o GitHub)
+data/
+
+# Arquivos de configuração local específicos do seu PC
+.vscode/
+*.log
