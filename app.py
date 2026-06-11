@@ -17,8 +17,26 @@ st.markdown("Gerencie o download de dados da CVM de forma visual e interativa.")
 def load_config():
     base_dir = Path(__file__).resolve().parent
     config_path = base_dir / "config" / "datasets.yaml"
-    with open(config_path, 'r', encoding='utf-8') as f:
-        return yaml.safe_load(f), base_dir
+    # 1. Verifica se o arquivo existe
+    if not config_path.exists():
+        st.error(f"❌ Arquivo de configuração não encontrado em: {config_path}")
+        st.stop() # Para a execução do app
+        
+    try:
+        # 2. Tenta ler o arquivo
+        with open(config_path, 'r', encoding='utf-8') as f:
+            config = yaml.safe_load(f)
+            
+            # 3. Verifica se o arquivo não está vazio
+            if config is None:
+                st.error("❌ O arquivo datasets.yaml está vazio ou com formatação inválida (verifique os espaços).")
+                st.stop()
+                
+            return config, base_dir
+            
+    except Exception as e:
+        st.error(f"❌ Erro ao ler o arquivo YAML: {e}")
+        st.stop()
 
 config, base_dir = load_config()
 
@@ -50,6 +68,11 @@ if selected_dataset:
             for res in resources:
                 file_name = res['url'].split('/')[-1]
                 is_downloaded = extractor.is_downloaded(res)
+
+                # 🛡️ CORREÇÃO: Verifica se o tamanho existe antes de dividir
+                size_bytes = res.get('size')
+                size_mb = round(size_bytes / (1024 * 1024), 2) if size_bytes and size_bytes > 0 else 0.0
+                
                 data.append({
                     'Arquivo': file_name,
                     'Status': '✅ Baixado' if is_downloaded else '⏳ Pendente',

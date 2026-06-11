@@ -1,0 +1,12 @@
+# config/datasets.yaml
+datasets:
+  dfp:
+    name: "Demonstrações Financeiras Padronizadas (DFP)"
+    ckan_id: "cia_aberta-doc-dfp"
+    download_dir: "data/bronze/dfp"
+    
+ # Exemplo de como você adicionaria outro dataset no futuro:
+ # fre:
+ #   name: "Formulário de Referência (FRE)"
+ #   ckan_id: "cia_aberta-doc-fre"
+ #   download_dir: "data/bronze/fre"
